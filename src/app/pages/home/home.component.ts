@@ -101,4 +101,26 @@ export class HomeComponent {
     })
   }
 
+  filter = signal('All');
+
+  changeFilter(filter: string) {
+    this.filter.set(filter);
+  }
+
+  filteredTasks() {
+    return this.tasks().filter(task => {
+      if (this.filter() === 'All') {
+        return true;
+      } else if (this.filter() === 'Pending') {
+        return !task.completed;
+      } else if (this.filter() === 'Completed') {
+        return task.completed;
+      }
+      return true;
+    });
+  }
+
+  clearCompletedTasks() {
+    this.tasks.update(tasks => tasks.filter(task => !task.completed));
+  }
 }

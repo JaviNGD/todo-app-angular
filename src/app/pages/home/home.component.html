@@ -18,7 +18,7 @@
             <ul class="todo-list">
                 <li 
                     (dblclick)="updateTaskEditingMode(i)" 
-                    *ngFor="let task of tasks(); index as i" 
+                    *ngFor="let task of filteredTasks(); index as i" 
                     [class.editing]="task.editing"
                     [class.completed]="task.completed"
                 >
@@ -33,21 +33,36 @@
         </section>
         <footer class="footer">
             <span class="todo-count">
-                <strong>{{ tasks().length }}</strong>
-                {{ tasks().length === 1 ? 'item' : 'items' }} left
+            <strong>{{ filteredTasks().length }}</strong>
+            {{ filteredTasks().length === 1 ? 'item' : 'items' }} left
             </span>
             <ul class="filters">
                 <li>
-                    <a class="selected">All</a>
+                    <a 
+                        (click)="changeFilter('All')" 
+                        [class.selected]="filter() === 'All'"
+                    >
+                        All
+                    </a>
                 </li>
                 <li>
-                    <a>Pending</a>
+                    <a 
+                        (click)="changeFilter('Pending')" 
+                        [class.selected]="filter() === 'Pending'"
+                    >
+                        Pending
+                    </a>
                 </li>
                 <li>
-                    <a>Completed</a>
+                    <a 
+                        (click)="changeFilter('Completed')" 
+                        [class.selected]="filter() === 'Completed'"
+                    >
+                        Completed
+                    </a>
                 </li>
             </ul>
-            <button class="clear-completed">Clear completed</button>
+            <button class="clear-completed" (click)="clearCompletedTasks()">Clear completed</button>
         </footer>
     </div>
 </section>
