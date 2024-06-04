@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,13 +13,22 @@ import { Task } from './../../models/task.model';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  tasks = signal<Task[]>([
-    {
-      id: Date.now(),
-      title: 'Task 1',
-      completed: false
+  tasks = signal<Task[]>([]);
+
+  constructor() {
+    effect(() => {
+      const tasks = this.tasks();
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    });
+  }
+  
+  ngOnInit() {
+    const storageTasks = localStorage.getItem('tasks');
+    if (storageTasks) {
+        const tasks: Task[] = JSON.parse(storageTasks);
+        this.tasks.set(tasks);
     }
-  ]);
+  }
 
   newTaskControl = new FormControl('', {
     nonNullable: true,
@@ -103,7 +112,7 @@ export class HomeComponent {
 
   filter = signal('All');
 
-  changeFilter(filter: string) {
+  changeFilter(filter: 'All' | 'Pending' | 'Completed') {
     this.filter.set(filter);
   }
 
